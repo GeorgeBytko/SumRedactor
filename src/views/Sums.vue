@@ -1,7 +1,6 @@
 <template>
   <sum-redactor
       :min-sum="300"
-      :init-sum="sum"
       title="Удаление миндалин лазером"
   >
   </sum-redactor>

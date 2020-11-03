@@ -18,10 +18,10 @@
         </div>
       </div>
       <div class="sum-redact__output">
-        <div class="sum-redact__output-field" data-qa="field" :class="{'sum-redact__output-field_outlined': isSumLow} ">
+        <div class="sum-redact__output-field" data-qa="field" :class="{'sum-redact__output-field_outlined': isSumLow && !isFirstError} ">
           {{ currentSum }}
         </div>
-        <div class="sum-redact__output-info" data-qa="error" v-if="isSumLow && isButtonsUsed">
+        <div class="sum-redact__output-info" data-qa="error" v-if="isSumLow && !isFirstError">
           Мин. сумма {{ minSum }} рублей
         </div>
       </div>
@@ -103,13 +103,21 @@ export default {
   data() {
     return {
       currentSum: this.initSum.toString() || '',
-      isButtonsUsed: false
+      isFirstError: true
     }
   },
   computed: {
     isSumLow() {
       return this.currentSum < this.minSum
     },
+  },
+  watch: {
+    isSumLow(val, prev) {
+      if (val && !prev) {
+        this.isFirstError = false
+      }
+
+    }
   },
   methods: {
     emitChangeSum() {
@@ -121,7 +129,6 @@ export default {
     },
 
     appendNumber(num) {
-      this.isButtonsUsed = true
       if (this.currentSum.length < this.maxSumLength) {
         this.currentSum = (+(this.currentSum + num)).toString()
       } else {
@@ -130,7 +137,6 @@ export default {
     },
 
     deleteLastNumber() {
-      this.isButtonsUsed = true
       this.currentSum = this.currentSum.length === 1 ? '0' : this.currentSum.slice(0, this.currentSum.length - 1)
     }
   },
